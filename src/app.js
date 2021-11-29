@@ -16,6 +16,7 @@ then(() => console.log("Connect to MongoDB"));
 //IMPORTING ROUTES
 const pilotRoute = require('./routes/pilot');
 const contractRoute = require('./routes/contract');
+const shipRoute = require('./routes/ship');
 
 app.use(bodyParser.json());
 app.use(urlEncodedParser);
@@ -23,7 +24,7 @@ app.use(urlEncodedParser);
 //SETING ROUTES
 app.use('/pilot',pilotRoute);
 app.use('/contract',contractRoute);
-
+app.use('/ship',shipRoute);
 
 
 
