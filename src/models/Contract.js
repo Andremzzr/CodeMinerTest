@@ -21,6 +21,10 @@ const ContractSchema = new mongoose.Schema({
     value: {
         type: Number,
         required: true
+    },
+    open : {
+        type: Boolean,
+        default : true
     }
 
 },{collection : 'contracts'});

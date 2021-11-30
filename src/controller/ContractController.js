@@ -20,7 +20,7 @@ module.exports = {
                 value
             });
 
-            return res.send("Contract created");
+            return res.send({message: "Contract created"});
 
         }
         catch(err){
@@ -32,7 +32,7 @@ module.exports = {
 
     returnAllContracts : async(req,res) => {
         const contracts = await Contract.find({});
-        return res.send(contracts);
+        return contracts == 0 ? res.send({message: "There's no contract available"}): res.send(contracts);
     }
 }
 

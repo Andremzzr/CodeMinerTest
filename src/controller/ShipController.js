@@ -14,11 +14,15 @@ module.exports = {
 
             if(findingPilot == undefined){
                 console.log(`${pilotId} tried to create another ship`);
-                return res.send({message: "Doesn't exists a pilot with id " + pilotId});
+                return res.send({
+                    type: "error",
+                    message: "Doesn't exists a pilot with id " + pilotId});
             }
             if(findingPilotsShip != undefined){
                 console.log(`${pilotId} tried to create another ship`);
-                return res.send({message: "This pilot already has a ship"});
+                return res.send({
+                    type: "error",
+                    message: "This pilot already has a ship"});
             }
             
             
