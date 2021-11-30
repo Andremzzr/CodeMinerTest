@@ -18,6 +18,10 @@ const PilotSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    payload: {
+        type: Array,
+        default : []
+    },
     location: {
         type: String,
         required: true
