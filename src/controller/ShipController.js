@@ -47,7 +47,7 @@ module.exports = {
                 shipId : ship.id
             });
 
-            res.send(`Ship created successfully`);
+            res.send({message: `Ship created successfully`});
 
             console.log(ship);
 

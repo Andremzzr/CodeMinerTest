@@ -17,6 +17,10 @@ const ShipSchema = new mongoose.Schema({
     weight : {
         type : Number,
         required : true
+    },
+    currentWeight : {
+        type : Number,
+        default: 0
     }
 },{collection : 'ships'});
 
