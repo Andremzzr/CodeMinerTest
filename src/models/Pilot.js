@@ -25,6 +25,10 @@ const PilotSchema = new mongoose.Schema({
     contracts : {
         type: Array,
         default: []
+    },
+    shipId : {
+        type: String,
+        default : ""
     }
 
 },{collection : 'pilots'});

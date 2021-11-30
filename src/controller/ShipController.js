@@ -1,4 +1,5 @@
 const Ship  = require('../models/Ship');
+const Pilot = require("../models/Pilot");
 
 
 module.exports = {
@@ -6,11 +7,18 @@ module.exports = {
         try{
             const {pilotId} = req.params;
 
-            const findingPilot = await Ship.findOne({pilotId: pilotId});
 
-            if(findingPilot != undefined){
+            //Validating pilot's id
+            const findingPilotsShip = await Ship.findOne({pilotId: pilotId});
+            const findingPilot = await Pilot.findOne({certification: pilotId});
+
+            if(findingPilot == undefined){
                 console.log(`${pilotId} tried to create another ship`);
-                return res.send("This pilot already has a ship");
+                return res.send({message: "Doesn't exists a pilot with id " + pilotId});
+            }
+            if(findingPilotsShip != undefined){
+                console.log(`${pilotId} tried to create another ship`);
+                return res.send({message: "This pilot already has a ship"});
             }
             
             
@@ -31,9 +39,14 @@ module.exports = {
                 weight
             });
 
+            const pilotUpdated = await Pilot.updateOne({certification: pilotId},{
+                shipId : ship.id
+            });
+
             res.send(`Ship created successfully`);
 
             console.log(ship);
+
 
         }
         catch(error){
