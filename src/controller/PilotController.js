@@ -25,7 +25,7 @@ module.exports = {
                 name,
                 age,
                 credits,
-                location
+                location: location.toUpperCase()
             })
 
             return res.send(`Pilot created: id ${pilot.id}`);
@@ -69,21 +69,12 @@ module.exports = {
             return res.send({message: "The pilot's ship doesn't carry this amount of weight"});
         }
 
-        /**
-         *  PEGAR DEPOIS
-         * 
-            pilot.payload.push({
-            contractId: contractId,
-            destination: contract.destinationPlanet,
-            payload: contractPayload
-        });
-         */
-       
-
+    
 
         pilot.contracts.push({
-            id: contractId,
+            contractId: contractId,
             location: contract.originPlanet,
+            destination : contract.destinationPlanet,
             onBoard: false  
         });
 
@@ -110,12 +101,18 @@ module.exports = {
             }    
 
             const pilot = await Pilot.findOne({certification: pilotId});
+            if(pilot == undefined){
+                return res.send({message: 'This pilot was not found'});
+            }
+
+            console.log(pilot.location);
+            console.log(planet);
 
             if(pilot == undefined){
                 return res.send({message: "This pilot doesn't exists"});
             }
 
-            const newTravel = new Travel(pilot.location,planet);
+            const newTravel = new Travel(pilot.location.toUpperCase(),planet.toUpperCase());
             const travelResult = newTravel.travel();
 
             //TRAVEL VERIFICATION
@@ -126,11 +123,21 @@ module.exports = {
                 return res.send({message: `You're in this planet :P`});
             }
             else{
-                const ship = await Ship.findOne({id: pilot.shipid});
+                const ship = await Ship.findOne({id: pilot.shipId});
                 if(ship.fuelLevel < travelResult){
                     return res.send({message: `You can't do this travel, you don't have enough gas`});
                 }
 
+                const pilotUpdated = await Pilot.updateOne({certification: pilotId},
+                    {
+                        location: planet
+                    });
+                
+                const shipUpdated = await Ship.updateOne({id: pilot.shipId},
+                    {fuelLevel: ship.fuelLevel - travelResult}
+                );
+
+                return res.send({message: `You're now in ${planet}. Your ship is now with ${ship.fuelLevel - travelResult} of gas`});
 
             }
         }

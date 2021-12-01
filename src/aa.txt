@@ -1,0 +1,46 @@
+if(pilot.payload.lenght > 0){
+                    
+                    const payloadsToBePaid = pilot.payload.filter(payload => payload.destination == planet);
+
+                    if(payloadsToBePaid.lenght > 0){
+                        return res.send('paylodas blaaa')
+                    }
+
+
+                }
+                
+                //HANDLE CONTRACTS
+                if(pilot.contracts.lenght > 0){
+                    let arrayOfIds = [];
+                    const contractsToGetPayload = pilot.contracts.filter(contract => { 
+                        if(contract.onBoard == false && contract.location == planet){
+                            arrayOfIds.push(contract.id);
+                            return contract;
+                        }
+                    });
+
+
+                    const contractsToSave = pilot.contracts.filter(contract => {
+                        if(arrayOfIds.includes(contract.id)){
+                            contract.onBoard = true;
+                        }
+                        return contract
+                    });
+                    
+                    contractsToGetPayload.forEach(contract => {
+                        const getContract = await Contract.findOne({id: contract.id});
+                        pilot.payload.push({
+                            contractId: getContract.id,
+                            destination: getContract.destinationPlanet,
+                            payload: JSON.parse(getContract.payload)
+                        });
+                    });
+
+
+                    Pilot.updateOne({certification: pilotId},
+                        {contracts: contractsToSave,
+                        payload: pilot.payload })
+                    .then(updateResult=> {
+                        return res.send({message: `You're in ${planet}`})
+                    });
+                }
