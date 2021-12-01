@@ -42,7 +42,7 @@ module.exports = {
         const { contractId, pilotId} = req.params;
 
         const pilot = await Pilot.findOne({certification: pilotId});
-        const contract = await Contract.findOne({id: contractId});
+        const contract = await Contract.findOne({_id: contractId});
 
 
 
@@ -50,10 +50,10 @@ module.exports = {
             return res.send({message: "One of the id's is wrong"});
         };
         if(contract.open == false){
-           return res.send({message: "This contract isn't available"});
+           return res.send({message: `This contract ${contract.id} isn't available`});
         }
 
-        const ship = await Ship.findOne({id: pilot.shipId});
+        const ship = await Ship.findOne({_id: pilot.shipId});
         
         //Parsing the string from contract.paylaod and calculating it's weight 
         const contractPayload = JSON.parse(contract.payload);
@@ -74,11 +74,10 @@ module.exports = {
         pilot.contracts.push({
             contractId: contractId,
             location: contract.originPlanet,
-            destination : contract.destinationPlanet,
-            onBoard: false  
+            destination : contract.destinationPlanet
         });
 
-        Contract.updateOne({id: contractId},{open : false})
+        Contract.updateOne({_id: contractId},{open : false})
         .then( contractUpdated => {
             Pilot.updateOne({certification: pilotId},
             {contracts : pilot.contracts})
@@ -145,9 +144,9 @@ module.exports = {
             console.log(err);
             return res.send({type: 'error', message: 'Travel failed'})
         }
-
-
     }
+
+
 }
 
 
