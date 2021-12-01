@@ -87,7 +87,7 @@ module.exports = {
                         payload: pilot.payload
                     })
                     .then(ex => {
-                        Contract.updateOne({id: contractId},
+                        Contract.updateOne({_id: contractId},
                             {onBoard: true})
                         .then(upd => {
                             return res.send({message: `Pilot ${pilotId} has gotten the payload from ${contractId}`})

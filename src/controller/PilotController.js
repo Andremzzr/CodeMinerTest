@@ -50,7 +50,7 @@ module.exports = {
             return res.send({message: "One of the id's is wrong"});
         };
         if(contract.open == false){
-           return res.send({message: `This contract ${contract.id} isn't available`});
+           return res.send({message: `The contract ${contract.id} isn't available`});
         }
 
         const ship = await Ship.findOne({_id: pilot.shipId});
