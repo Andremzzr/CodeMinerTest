@@ -178,16 +178,25 @@ module.exports = {
                 return res.send({message: "Pilot not found"});
             }   
             
-            const {fuel} = req.body;
+            let {fuel} = req.body;
             if(!isNaN(fuel) == true ){
-                const value = fuel * 7;
+                let value;
+                if(parseInt(fuel) + ship.fuelLevel <= ship.fuelCapacity){
+                    value = parseInt(fuel) * 7;
+                    fuel = parseInt(ship.fuelLevel) + parseInt(fuel)
+                }
+                else{
+                    value = (ship.fuelCapacity - ship.fuelLevel) * 7;
+                    fuel =  ship.fuelCapacity
+                }
+                
 
                 if(value <= pilot.credits){
                     Pilot.updateOne({certification: pilotId},
                     {credits: pilot.credits - value})
                     .then(async(update) => {
                         const newShip = await Ship.updateOne({_id: pilot.shipId},
-                        {fuelLevel: parseInt(ship.fuelLevel) + parseInt(fuel)});
+                        {fuelLevel: fuel });
 
                         return res.send({message: `Ship - ${ship.id} => fuelLevel: ${ship.fuelLevel + parseInt(fuel)}`})
                         
