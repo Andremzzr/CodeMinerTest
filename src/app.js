@@ -17,6 +17,7 @@ then(() => console.log("Connect to MongoDB"));
 const pilotRoute = require('./routes/pilot');
 const contractRoute = require('./routes/contract');
 const shipRoute = require('./routes/ship');
+const federationRoute = require('./routes/federation');
 
 app.use(bodyParser.json());
 app.use(urlEncodedParser);
@@ -25,6 +26,7 @@ app.use(urlEncodedParser);
 app.use('/pilot',pilotRoute);
 app.use('/contract',contractRoute);
 app.use('/ship',shipRoute);
+app.use('/federation',federationRoute);
 
 
 

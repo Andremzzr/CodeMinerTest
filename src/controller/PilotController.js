@@ -2,6 +2,7 @@ const Pilot = require('../models/Pilot.js');
 const Contract = require('../models/Contract');
 const Ship = require('../models/Ship');
 const Travel = require('../classes/Travel');
+const Transactions = require('../models/Transactions');
 
 const generateCertification = require('../utils/generateCertification');
 
@@ -200,6 +201,11 @@ module.exports = {
                     .then(async(update) => {
                         const newShip = await Ship.updateOne({_id: pilot.shipId},
                         {fuelLevel: fuel });
+                        
+                        const newMessage = `Pilot - ${pilot.name} bought fuel => -₭${value}`;
+                            const transaction = await Transactions.create({description: newMessage});
+                            console.log(newMessage);
+
 
                         return res.send({message: `Ship - ${ship.id} => fuelLevel: ${ship.fuelLevel + parseInt(fuel)}`})
                         

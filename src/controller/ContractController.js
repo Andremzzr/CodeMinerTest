@@ -1,5 +1,6 @@
 const Contract = require('../models/Contract');
 const Pilot = require('../models/Pilot');
+const Transactions = require('../models/Transactions');
 
 module.exports = {
     createContract: async(req,res) => {
@@ -161,7 +162,10 @@ module.exports = {
                     })
                     .then(ex => {
                         Contract.deleteOne({_id: contractId})
-                        .then(upd => {
+                        .then(async(upd) => {
+                            const newMessage = `Contract ${contract.id} paid to ${pilot.name}: -₭${contract.value}`;
+                            const transaction = await Transactions.create({description: newMessage});
+                            console.log(newMessage);
                             return res.send({message: `Contract - ${contractId} has been finishied by ${pilotId}`})
                         })
                     })
