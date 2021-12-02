@@ -1,3 +1,3 @@
 module.exports = (initialCharacter) => {
-    return `${initialCharacter}${Math.floor(Math.random() * (100000 - 1)) + 1}`;
+    return `${initialCharacter}${Math.floor(Math.random() * (999999 - 100000)) + 100000}`;
 }

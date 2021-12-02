@@ -13,7 +13,10 @@ module.exports = {
             const {name,age,credits,location} = req.body;
 
             if(!locations.includes(location.toUpperCase())){
-                return res.send({message: `${location} doesn't exists`})
+                return res.send({message: `${location} doesn't exists`});
+            }
+            if(age < 18){
+                return res.send({message: `The minimum age to ride a ship is 18 years.`});
             }
 
             
