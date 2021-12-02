@@ -144,6 +144,27 @@ module.exports = {
             console.log(err);
             return res.send({type: 'error', message: 'Travel failed'})
         }
+    },
+
+    returnPilot: async(req,res) => {
+       try{
+            const {pilotId} = req.params;
+
+
+            const pilot = await Pilot.findOne({certification: pilotId});
+            
+            if(pilot == undefined){
+                return res.send({message: 'This pilot does not exists'});
+            }
+
+            return res.send({pilot});
+
+       }
+       catch(err){
+           console.log(err);
+           return res.status(400).send({message: 'Pilot Profile not found'});
+       }
+
     }
 
 
