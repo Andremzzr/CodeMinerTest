@@ -42,14 +42,11 @@ module.exports = {
         try{
             const {pilotId, contractId} = req.params;
 
-            console.log('id passado: ' + contractId)
 
             const pilot = await Pilot.findOne({certification: pilotId});
             const contract = await Contract.findOne({_id: contractId});
 
             
-
-            console.log(contract);
 
             if(pilot == undefined){
                 return res.send({message: "This pilot doesn't exists"});
@@ -104,6 +101,78 @@ module.exports = {
         catch(err){
             console.log(err);
             return res.status(400).send({message: "Error"});
+        }
+    },
+
+
+
+    deliverPayload : async(req,res) => {
+        try{
+
+            const {
+                pilotId,contractId
+            } = req.params;
+
+            const pilot = await Pilot.findOne({certification: pilotId});
+            const contract = await Contract.findOne({_id: contractId});
+
+            if(pilot == undefined){
+                return res.send({message: "This pilot doesn't exists"});
+            }
+            
+            if(contract == undefined){
+                return res.send({message: "This contract doesn't exists"});
+            }
+            
+            if(contract.destinationPlanet.toUpperCase() != pilot.location.toUpperCase()){
+                return res.send({message: `You are not in ${contract.destinationPlanet}`});
+            }
+
+            if(contract.onBoard == false){
+                return res.send({message: `The contract insn't on board`});
+            }
+
+
+
+            if(pilot.payload.length > 0){
+                let comfirmed = false;
+                pilot.payload.forEach((pilotPayload,index) => {
+                    if(pilotPayload.contractId == contract.id){
+                        
+                        pilot.payload.splice(index,1);
+                        comfirmed = true;
+                    }
+                })
+
+
+                if(comfirmed == true){
+                    pilot.contracts.forEach((pilotContract,index) => {
+                        if(pilotContract.contractId == contractId){
+                            pilot.contracts.splice(index,1);
+                        }
+                    });
+    
+    
+                    Pilot.updateOne({certification: pilotId},
+                    {
+                        payload: pilot.payload,
+                        contracts: pilot.contracts,
+                        credits: pilot.credits + contract.value
+                    })
+                    .then(ex => {
+                        Contract.deleteOne({_id: contractId})
+                        .then(upd => {
+                            return res.send({message: `Contract - ${contractId} has been finishied by ${pilotId}`})
+                        })
+                    })
+                }
+            }
+
+            
+        }
+        catch(err){
+            console.log(err);
+            return res.send({message: 'Error'});
         }
     }
 }
