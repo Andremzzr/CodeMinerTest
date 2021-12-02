@@ -165,6 +165,45 @@ module.exports = {
            return res.status(400).send({message: 'Pilot Profile not found'});
        }
 
+    },
+
+    buyFuel : async(req,res) => {
+        try{
+            const {pilotId} = req.params;
+            
+            const pilot = await Pilot.findOne({certification: pilotId});
+            const ship = await Ship.findOne({_id: pilot.shipId});
+
+            if(pilot == undefined){
+                return res.send({message: "Pilot not found"});
+            }   
+            
+            const {fuel} = req.body;
+            if(!isNaN(fuel) == true ){
+                const value = fuel * 7;
+
+                if(value <= pilot.credits){
+                    Pilot.updateOne({certification: pilotId},
+                    {credits: pilot.credits - value})
+                    .then(async(update) => {
+                        const newShip = await Ship.updateOne({_id: pilot.shipId},
+                        {fuelLevel: parseInt(ship.fuelLevel) + parseInt(fuel)});
+
+                        return res.send({message: `Ship - ${ship.id} => fuelLevel: ${ship.fuelLevel + parseInt(fuel)}`})
+                        
+                    })
+                }
+                else{
+                    return res.send({message: `You can't buy this amount of fuel`,
+                    stats: `Value - ${value} | Pilot Credits: ${pilot.credits}`});
+                }
+            }
+
+        }
+        catch(err){
+            console.log(err);
+           return res.status(400).send({message: 'Could not buy fuel'});
+        }
     }
 
 
