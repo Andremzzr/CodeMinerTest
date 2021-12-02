@@ -30,6 +30,7 @@ MONGO_URI
 ## Federation routes [/federation]
 ```
 /transactions
+/pilots
 ```
 
 ## Ship routes [/ship]

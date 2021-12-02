@@ -6,21 +6,15 @@ module.exports = {
         const pilots = await Pilot.find({});
         
         const newPilots = pilots.filter(pilot => {
-            let payload = {water: 0,food: 0, minerals: 0};
-            payload = pilot.payload.forEach()
+            
             return {
                 id : pilot.certification,
-                resources : ""
+                resources : pilot.payload
             }
-        
-        
-        }
+            }
         );
 
-
-
-
-        
+            res.send(newPilots);
     },
 
 

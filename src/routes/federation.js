@@ -7,7 +7,7 @@ const {
 } = require('../controller/FederationController');
 
 router.get('/transactions', allTransactions);
-
+router.get('/pilots',allPilots)
 
 
 
